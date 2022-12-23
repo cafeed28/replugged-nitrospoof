@@ -24,4 +24,5 @@ export type SelectedGuildStoreType = ModuleExports & {
 export type EmojiInfoType = ModuleExports & {
   getEmojiUnavailableReason: (id: string) => string | undefined;
   isEmojiPremiumLocked: (...args: unknown[]) => boolean;
+  isEmojiDisabled: (...args: unknown[]) => boolean;
 };
