@@ -1,25 +1,57 @@
-import { Injector, webpack } from "replugged";
+import { Injector } from "replugged";
+import { EmojiInfo, MessageActions, SelectedGuildStore } from "./webpack";
+import { Emoji } from "./types";
 
-const inject = new Injector();
+const injector = new Injector();
 
-export async function start(): Promise<void> {
-  const typingMod = await webpack.waitForModule<{
-    startTyping: (channelId: string) => void;
-  }>(webpack.filters.byProps("startTyping"));
-  const getChannelMod = await webpack.waitForModule<{
-    getChannel: (id: string) => {
-      name: string;
-    };
-  }>(webpack.filters.byProps("getChannel"));
+// TODO: test with nitro
+function isEmojiAvailable(emoji: Emoji): boolean {
+  // Emoji not available on Discord (e.g. emoji was in slot 50+ and the server ran out of boosts)
+  if (!emoji.available) return false;
 
-  if (typingMod && getChannelMod) {
-    inject.instead(typingMod, "startTyping", ([channel]) => {
-      const channelObj = getChannelMod.getChannel(channel);
-      console.log(`Typing prevented! Channel: #${channelObj?.name ?? "unknown"} (${channel}).`);
-    });
-  }
+  if (emoji.animated) return false;
+
+  // Emoji from the current guild
+  // Note: getGuildId will return null if user is in DMs
+  if (emoji.guildId == SelectedGuildStore.getGuildId()) return true;
+
+  return false;
+}
+
+export function start(): void {
+  injector.before(MessageActions, "sendMessage", (args) => {
+    const [, message] = args;
+    const escapedIds: string[] = [];
+
+    for (const match of message.content.matchAll(/\\<(a?):(.*?):(.*?)>/gm)) {
+      escapedIds.push(match[3]);
+    }
+
+    for (const emoji of message.validNonShortcutEmojis) {
+      if (escapedIds.includes(emoji.id)) continue;
+      console.log(emoji);
+      if (isEmojiAvailable(emoji)) continue;
+
+      const animated = emoji.animated ? "a" : "";
+      const name = emoji.originalName || emoji.name;
+
+      const searchString = `<${animated}:${name}:${emoji.id}>`;
+
+      message.content = message.content.replace(searchString, emoji.url);
+    }
+
+    return args;
+  });
+
+  injector.instead(EmojiInfo, "getEmojiUnavailableReason", () => {
+    return null;
+  });
+
+  injector.instead(EmojiInfo, "isEmojiPremiumLocked", () => {
+    return false;
+  });
 }
 
 export function stop(): void {
-  inject.uninjectAll();
+  injector.uninjectAll();
 }

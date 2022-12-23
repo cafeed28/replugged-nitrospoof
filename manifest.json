@@ -1,18 +1,19 @@
 {
-  "id": "dev.replugged.PluginTemplate",
-  "name": "Plugin Template",
-  "description": "A plugin template",
+  "id": "com.cafeed28.NitroSpoof",
+  "name": "NitroSpoof",
+  "description": "Send Nitro emojis as images",
   "author": {
-    "name": "replugged",
+    "name": "кафіф#0238",
     "discordID": "1000992611840049192",
-    "github": "replugged-org"
+    "github": "cafeed28"
   },
-  "version": "1.0.3",
+  "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "replugged-org/plugin-template"
+    "id": "cafeed28/replugged-nitrospoof"
   },
   "license": "MIT",
   "type": "replugged-plugin",
-  "renderer": "src/index.ts"
+  "renderer": "src/index.ts",
+  "plaintextPatches": "src/plaintextPatches.ts"
 }
