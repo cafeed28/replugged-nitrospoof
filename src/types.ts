@@ -11,12 +11,6 @@ export interface Emoji {
   guildId: string;
 }
 
-export interface Message {
-  content: string;
-  invalidEmojis: Emoji[];
-  validNonShortcutEmojis: Emoji[];
-}
-
 export type SelectedGuildStoreType = ModuleExports & {
   getGuildId: () => string;
 };

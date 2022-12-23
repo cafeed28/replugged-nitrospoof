@@ -1,5 +1,5 @@
-import { Injector } from "replugged";
-import { EmojiInfo, MessageActions, SelectedGuildStore } from "./webpack";
+import { Injector, common } from "replugged";
+import { EmojiInfo, SelectedGuildStore } from "./webpack";
 import { Emoji } from "./types";
 
 const injector = new Injector();
@@ -19,7 +19,7 @@ function isEmojiAvailable(emoji: Emoji): boolean {
 }
 
 export function start(): void {
-  injector.before(MessageActions, "sendMessage", (args) => {
+  injector.before(common.messages, "sendMessage", (args) => {
     const [, message] = args;
     const escapedIds: string[] = [];
 
@@ -27,7 +27,7 @@ export function start(): void {
       escapedIds.push(match[3]);
     }
 
-    for (const emoji of message.validNonShortcutEmojis) {
+    for (const emoji of message.validNonShortcutEmojis as unknown as Emoji[]) {
       if (escapedIds.includes(emoji.id)) continue;
       if (isEmojiAvailable(emoji)) continue;
 
@@ -47,6 +47,10 @@ export function start(): void {
   });
 
   injector.instead(EmojiInfo, "isEmojiPremiumLocked", () => {
+    return false;
+  });
+
+  injector.instead(EmojiInfo, "isEmojiDisabled", () => {
     return false;
   });
 }
