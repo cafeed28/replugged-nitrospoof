@@ -1,3 +1,7 @@
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+
 # Logs
 logs
 *.log
