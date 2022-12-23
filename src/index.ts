@@ -29,7 +29,6 @@ export function start(): void {
 
     for (const emoji of message.validNonShortcutEmojis) {
       if (escapedIds.includes(emoji.id)) continue;
-      console.log(emoji);
       if (isEmojiAvailable(emoji)) continue;
 
       const animated = emoji.animated ? "a" : "";
