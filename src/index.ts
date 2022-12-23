@@ -35,8 +35,9 @@ export function start(): void {
       const name = emoji.originalName || emoji.name;
 
       const searchString = `<${animated}:${name}:${emoji.id}>`;
+      const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}?size=48`; // TODO: configurable emoji size (when replugged settings is done)
 
-      message.content = message.content.replace(searchString, emoji.url);
+      message.content = message.content.replace(searchString, replaceUrl);
     }
 
     return args;
