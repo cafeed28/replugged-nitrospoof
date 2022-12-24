@@ -1,6 +1,7 @@
-import { Injector, common } from "replugged";
+import { Injector, common, webpack } from "replugged";
 import { EmojiInfo, SelectedGuildStore } from "./webpack";
 import { Emoji } from "./types";
+import { OutgoingMessage } from "replugged/dist/renderer/modules/webpack/common/messages";
 
 const injector = new Injector();
 
@@ -18,42 +19,47 @@ function isEmojiAvailable(emoji: Emoji): boolean {
   return false;
 }
 
-export function start(): void {
-  injector.before(common.messages, "sendMessage", (args) => {
-    const [, message] = args;
-    const escapedIds: string[] = [];
+function replaceEmojis(message: OutgoingMessage): void {
+  const escapedIds: string[] = [];
 
-    for (const match of message.content.matchAll(/\\<(a?):(.*?):(.*?)>/gm)) {
-      escapedIds.push(match[3]);
-    }
+  for (const match of message.content.matchAll(/\\<(a?):(.*?):(.*?)>/gm)) {
+    escapedIds.push(match[3]);
+  }
 
-    for (const emoji of message.validNonShortcutEmojis as unknown as Emoji[]) {
-      if (escapedIds.includes(emoji.id)) continue;
-      if (isEmojiAvailable(emoji)) continue;
+  for (const emoji of message.validNonShortcutEmojis as unknown as Emoji[]) {
+    if (escapedIds.includes(emoji.id)) continue;
+    if (isEmojiAvailable(emoji)) continue;
 
-      const animated = emoji.animated ? "a" : "";
-      const name = emoji.originalName || emoji.name;
+    const animated = emoji.animated ? "a" : "";
+    const name = emoji.originalName || emoji.name;
 
-      const searchString = `<${animated}:${name}:${emoji.id}>`;
-      const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}?size=48`; // TODO: configurable emoji size (when replugged settings is done)
+    const searchString = `<${animated}:${name}:${emoji.id}>`;
+    const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}?size=48`; // TODO: configurable emoji size (when replugged settings is done)
 
-      message.content = message.content.replace(searchString, replaceUrl);
-    }
+    message.content = message.content.replace(searchString, replaceUrl);
+  }
+}
 
+export async function start(): Promise<void> {
+  const mod = await webpack.waitForModule<{
+    uploadFiles: (args: { parsedMessage: OutgoingMessage }) => void;
+  }>(webpack.filters.byProps("uploadFiles"));
+
+  injector.before(mod, "uploadFiles", (args) => {
+    const message = args[0].parsedMessage;
+    replaceEmojis(message);
     return args;
   });
 
-  injector.instead(EmojiInfo, "getEmojiUnavailableReason", () => {
-    return null;
+  injector.before(common.messages, "sendMessage", (args) => {
+    const [, message] = args;
+    replaceEmojis(message);
+    return args;
   });
 
-  injector.instead(EmojiInfo, "isEmojiPremiumLocked", () => {
-    return false;
-  });
-
-  injector.instead(EmojiInfo, "isEmojiDisabled", () => {
-    return false;
-  });
+  injector.instead(EmojiInfo, "isEmojiDisabled", () => false);
+  injector.instead(EmojiInfo, "isEmojiPremiumLocked", () => false);
+  injector.instead(EmojiInfo, "getEmojiUnavailableReason", () => null);
 }
 
 export function stop(): void {
