@@ -1,9 +1,10 @@
-import { Injector, common, webpack } from "replugged";
-import { EmojiInfo, SelectedGuildStore } from "./webpack";
-import { Emoji } from "./types";
+import { Injector, common, settings } from "replugged";
+import { CloudUploader, EmojiInfo, SelectedGuildStore } from "./webpack";
+import { Config, Emoji } from "./types";
 import { OutgoingMessage } from "replugged/dist/renderer/modules/webpack/common/messages";
 
 const injector = new Injector();
+const config = await settings.init<Config>("com.cafeed28.NitroSpoof");
 
 // TODO: test with nitro
 function isEmojiAvailable(emoji: Emoji): boolean {
@@ -30,22 +31,19 @@ function replaceEmojis(message: OutgoingMessage): void {
     if (escapedIds.includes(emoji.id)) continue;
     if (isEmojiAvailable(emoji)) continue;
 
-    const animated = emoji.animated ? "a" : "";
     const name = emoji.originalName || emoji.name;
-
+    const animated = emoji.animated ? "a" : "";
     const searchString = `<${animated}:${name}:${emoji.id}>`;
-    const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}?size=48`; // TODO: configurable emoji size (when replugged settings is done)
+
+    const size = config.get("emojiSize", 48);
+    const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
 
     message.content = message.content.replace(searchString, replaceUrl);
   }
 }
 
-export async function start(): Promise<void> {
-  const mod = await webpack.waitForModule<{
-    uploadFiles: (args: { parsedMessage: OutgoingMessage }) => void;
-  }>(webpack.filters.byProps("uploadFiles"));
-
-  injector.before(mod, "uploadFiles", (args) => {
+export function start(): void {
+  injector.before(CloudUploader, "uploadFiles", (args) => {
     const message = args[0].parsedMessage;
     replaceEmojis(message);
     return args;
