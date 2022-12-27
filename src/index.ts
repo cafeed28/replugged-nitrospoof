@@ -32,11 +32,12 @@ function replaceEmojis(message: OutgoingMessage): void {
     if (isEmojiAvailable(emoji)) continue;
 
     const name = emoji.originalName || emoji.name;
-    const animated = emoji.animated ? "a" : "";
-    const searchString = `<${animated}:${name}:${emoji.id}>`;
+    const prefix = emoji.animated ? "a" : "";
+    const searchString = `<${prefix}:${name}:${emoji.id}>`;
 
     const size = config.get("emojiSize", 48);
-    const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
+    const extension = emoji.animated ? "gif" : "webp";
+    const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
 
     message.content = message.content.replace(searchString, replaceUrl);
   }
