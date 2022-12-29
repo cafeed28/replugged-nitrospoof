@@ -4,6 +4,7 @@ import { ModuleExports } from "replugged/dist/types";
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
   emojiSize: number;
+  hideLinks: boolean;
 };
 
 export interface Emoji {
@@ -29,4 +30,8 @@ export type EmojiInfoType = ModuleExports & {
 
 export type CloudUploaderType = ModuleExports & {
   uploadFiles: (args: { parsedMessage: OutgoingMessage }) => void;
+};
+
+export type MessageParserType = {
+  parse: (message: unknown, content: string) => OutgoingMessage;
 };
