@@ -40,6 +40,7 @@ function replaceEmojis(message: OutgoingMessage): void {
     const size = config.get("emojiSize", 48);
     const extension = emoji.animated ? "gif" : "webp";
     const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
+    const hideLinks = config.get("hideLinks", false);
 
     if (hideLinks && message.content.length > searchString.length) {
       // Move emoji to the end and hide its link
