@@ -46,7 +46,7 @@ function replaceEmojis(message: OutgoingMessage): void {
       // Move emoji to the end and hide its link
       message.content = message.content.replace(searchString, "");
       if (!message.content.includes(HIDE_TEXT_SPOILERS)) message.content += HIDE_TEXT_SPOILERS;
-      message.content += " " + replaceUrl + " ";
+      message.content += ` ${replaceUrl} `;
     } else {
       message.content = message.content.replace(searchString, replaceUrl);
     }
@@ -54,7 +54,7 @@ function replaceEmojis(message: OutgoingMessage): void {
 }
 
 export function start(): void {
-  injector.after(MessageParser, "parse", (args, message) => {
+  injector.after(MessageParser, "parse", (_, message) => {
     replaceEmojis(message);
     return message;
   });

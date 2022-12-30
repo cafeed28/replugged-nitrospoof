@@ -1,11 +1,6 @@
 import { webpack } from "replugged";
 
-import {
-  CloudUploaderType,
-  EmojiInfoType,
-  MessageParserType,
-  SelectedGuildStoreType,
-} from "./types";
+import { EmojiInfoType, MessageParserType, SelectedGuildStoreType } from "./types";
 
 export const SelectedGuildStore: SelectedGuildStoreType = webpack.getExportsForProps(
   webpack.getByProps("getLastSelectedGuildId")!,

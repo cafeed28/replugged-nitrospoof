@@ -28,6 +28,6 @@ export type EmojiInfoType = ModuleExports & {
   isEmojiDisabled: (...args: unknown[]) => boolean;
 };
 
-export type MessageParserType = {
+export type MessageParserType = ModuleExports & {
   parse: (message: unknown, content: string) => OutgoingMessage;
 };
