@@ -1,10 +1,12 @@
-import { Injector, common, settings } from "replugged";
-import { CloudUploader, EmojiInfo, SelectedGuildStore } from "./webpack";
-import { Config, Emoji } from "./types";
+import { Injector, settings } from "replugged";
 import { OutgoingMessage } from "replugged/dist/renderer/modules/webpack/common/messages";
+import { Config, Emoji } from "./types";
+import { EmojiInfo, MessageParser, SelectedGuildStore } from "./webpack";
 
 const injector = new Injector();
 const config = await settings.init<Config>("com.cafeed28.NitroSpoof");
+
+const HIDE_TEXT_SPOILERS = "||\u200b||".repeat(199);
 
 // TODO: test with nitro
 function isEmojiAvailable(emoji: Emoji): boolean {
@@ -38,22 +40,23 @@ function replaceEmojis(message: OutgoingMessage): void {
     const size = config.get("emojiSize", 48);
     const extension = emoji.animated ? "gif" : "webp";
     const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
+    const hideLinks = config.get("hideLinks", false);
 
-    message.content = message.content.replace(searchString, replaceUrl);
+    if (hideLinks && message.content.length > searchString.length) {
+      // Move emoji to the end and hide its link
+      message.content = message.content.replace(searchString, "");
+      if (!message.content.includes(HIDE_TEXT_SPOILERS)) message.content += HIDE_TEXT_SPOILERS;
+      message.content += " " + replaceUrl + " ";
+    } else {
+      message.content = message.content.replace(searchString, replaceUrl);
+    }
   }
 }
 
 export function start(): void {
-  injector.before(CloudUploader, "uploadFiles", (args) => {
-    const message = args[0].parsedMessage;
+  injector.after(MessageParser, "parse", (args, message) => {
     replaceEmojis(message);
-    return args;
-  });
-
-  injector.before(common.messages, "sendMessage", (args) => {
-    const [, message] = args;
-    replaceEmojis(message);
-    return args;
+    return message;
   });
 
   injector.instead(EmojiInfo, "isEmojiDisabled", () => false);

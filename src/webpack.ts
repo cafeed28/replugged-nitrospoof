@@ -1,6 +1,11 @@
 import { webpack } from "replugged";
 
-import { CloudUploaderType, EmojiInfoType, SelectedGuildStoreType } from "./types";
+import {
+  CloudUploaderType,
+  EmojiInfoType,
+  MessageParserType,
+  SelectedGuildStoreType,
+} from "./types";
 
 export const SelectedGuildStore: SelectedGuildStoreType = webpack.getExportsForProps(
   webpack.getByProps("getLastSelectedGuildId")!,
@@ -12,6 +17,4 @@ export const EmojiInfo: EmojiInfoType = webpack.getExportsForProps(
   ["getEmojiUnavailableReason"],
 ) as unknown as EmojiInfoType;
 
-export const CloudUploader = await webpack.waitForModule<CloudUploaderType>(
-  webpack.filters.byProps("uploadFiles"),
-);
+export const MessageParser = webpack.getByProps("parse", "parsePreprocessor") as MessageParserType;
