@@ -28,10 +28,6 @@ export type EmojiInfoType = ModuleExports & {
   isEmojiDisabled: (...args: unknown[]) => boolean;
 };
 
-export type CloudUploaderType = ModuleExports & {
-  uploadFiles: (args: { parsedMessage: OutgoingMessage }) => void;
-};
-
 export type MessageParserType = {
   parse: (message: unknown, content: string) => OutgoingMessage;
 };

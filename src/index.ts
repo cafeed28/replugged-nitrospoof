@@ -1,7 +1,7 @@
 import { Injector, settings } from "replugged";
 import { OutgoingMessage } from "replugged/dist/renderer/modules/webpack/common/messages";
 import { Config, Emoji } from "./types";
-import { CloudUploader, EmojiInfo, MessageParser, SelectedGuildStore } from "./webpack";
+import { EmojiInfo, MessageParser, SelectedGuildStore } from "./webpack";
 
 const injector = new Injector();
 const config = await settings.init<Config>("com.cafeed28.NitroSpoof");
@@ -41,26 +41,18 @@ function replaceEmojis(message: OutgoingMessage): void {
     const extension = emoji.animated ? "gif" : "webp";
     const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
 
-    const hideLinks = config.get("hideLinks", true);
-
-    // Move emoji to the end and hide its link
     if (hideLinks && message.content.length > searchString.length) {
+      // Move emoji to the end and hide its link
       message.content = message.content.replace(searchString, "");
       if (!message.content.includes(HIDE_TEXT_SPOILERS)) message.content += HIDE_TEXT_SPOILERS;
-      message.content += " " + searchString;
+      message.content += " " + replaceUrl + " ";
+    } else {
+      message.content = message.content.replace(searchString, replaceUrl);
     }
-
-    message.content = message.content.replace(searchString, replaceUrl);
   }
 }
 
 export function start(): void {
-  injector.before(CloudUploader, "uploadFiles", (args) => {
-    const message = args[0].parsedMessage;
-    replaceEmojis(message);
-    return args;
-  });
-
   injector.after(MessageParser, "parse", (args, message) => {
     replaceEmojis(message);
     return message;

@@ -18,7 +18,3 @@ export const EmojiInfo: EmojiInfoType = webpack.getExportsForProps(
 ) as unknown as EmojiInfoType;
 
 export const MessageParser = webpack.getByProps("parse", "parsePreprocessor") as MessageParserType;
-
-export const CloudUploader = await webpack.waitForModule<CloudUploaderType>(
-  webpack.filters.byProps("uploadFiles"),
-);
