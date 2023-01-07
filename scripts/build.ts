@@ -18,8 +18,7 @@ const globalModules: esbuild.Plugin = {
       return {
         errors: [
           {
-            text:
-              `Importing from a path (${args.path}) is not supported. Instead, please import from "replugged" and destructure the required modules.`,
+            text: `Importing from a path (${args.path}) is not supported. Instead, please import from "replugged" and destructure the required modules.`,
           },
         ],
       };
@@ -54,12 +53,7 @@ export const CONFIG_PATH = (() => {
     case "win32":
       return join(process.env.APPDATA || "", REPLUGGED_FOLDER_NAME);
     case "darwin":
-      return join(
-        process.env.HOME || "",
-        "Library",
-        "Application Support",
-        REPLUGGED_FOLDER_NAME,
-      );
+      return join(process.env.HOME || "", "Library", "Application Support", REPLUGGED_FOLDER_NAME);
     default:
       if (process.env.XDG_CONFIG_HOME) {
         return join(process.env.XDG_CONFIG_HOME, REPLUGGED_FOLDER_NAME);
