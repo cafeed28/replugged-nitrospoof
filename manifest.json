@@ -7,7 +7,7 @@
     "discordID": "942752356595023874",
     "github": "cafeed28"
   },
-  "version": "1.1.1",
+  "version": "1.1.2",
   "updater": {
     "type": "github",
     "id": "cafeed28/replugged-nitrospoof"

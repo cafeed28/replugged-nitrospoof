@@ -4,6 +4,7 @@ import { ModuleExports } from "replugged/dist/types";
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
   emojiSize: number;
+  emojiStaticExtension: "webp" | "png";
   hideLinks: boolean;
 };
 

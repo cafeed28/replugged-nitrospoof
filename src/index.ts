@@ -8,6 +8,11 @@ const config = await settings.init<Config>("com.cafeed28.NitroSpoof");
 
 const HIDE_TEXT_SPOILERS = "||\u200b||".repeat(199);
 
+function getExtension(emoji: Emoji): string {
+  if (emoji.animated) return "gif";
+  return config.get("emojiStaticExtension", "png")!;
+}
+
 // TODO: test with nitro
 function isEmojiAvailable(emoji: Emoji): boolean {
   // Emoji not available on Discord (e.g. emoji was in slot 50+ and the server ran out of boosts)
@@ -38,7 +43,7 @@ function replaceEmojis(message: OutgoingMessage): void {
     const searchString = `<${prefix}:${name}:${emoji.id}>`;
 
     const size = config.get("emojiSize", 48);
-    const extension = emoji.animated ? "gif" : "webp";
+    const extension = getExtension(emoji);
     const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
     const hideLinks = config.get("hideLinks", false);
 
