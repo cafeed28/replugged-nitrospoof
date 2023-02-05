@@ -1,12 +1,22 @@
-import { OutgoingMessage } from "replugged/dist/renderer/modules/webpack/common/messages";
-import { ModuleExports } from "replugged/dist/types";
-
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
   emojiSize: number;
-  emojiStaticExtension: "webp" | "png";
-  hideLinks: boolean;
+  emojiStaticExtension: "png" | "webp";
+  emojiHideLinks: boolean;
 };
+
+export enum PremiumType {
+  None = 0,
+  Tier1,
+  Tier2,
+  Tier3,
+}
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface UserFetchResponse {
+  premium_type: PremiumType | null;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface Emoji {
   animated: boolean;
@@ -19,16 +29,7 @@ export interface Emoji {
   guildId: string;
 }
 
-export type SelectedGuildStoreType = ModuleExports & {
-  getGuildId: () => string;
-};
-
-export type EmojiInfoType = ModuleExports & {
-  getEmojiUnavailableReason: (id: string) => string | undefined;
-  isEmojiPremiumLocked: (...args: unknown[]) => boolean;
-  isEmojiDisabled: (...args: unknown[]) => boolean;
-};
-
-export type MessageParserType = ModuleExports & {
-  parse: (message: unknown, content: string) => OutgoingMessage;
-};
+export interface OutgoingMessage {
+  content: string;
+  validNonShortcutEmojis: Emoji[];
+}

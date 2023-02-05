@@ -107,4 +107,4 @@ dist
 # TernJS port file
 .tern-port
 
-/*.asar
+/bundle

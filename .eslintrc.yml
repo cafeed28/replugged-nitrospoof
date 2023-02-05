@@ -40,7 +40,7 @@ overrides:
     rules:
       node/no-missing-import: off
       eqeqeq: off
-      \@typescript-eslint/no-dynamic-delete: off
+      "@typescript-eslint/no-dynamic-delete": off
       no-return-assign: off
       no-void: off
       consistent-return: off

@@ -1,13 +1,13 @@
 {
   "id": "com.cafeed28.NitroSpoof",
   "name": "NitroSpoof",
-  "description": "Send Nitro emojis as images",
+  "description": "Use some Nitro features without wasting your money!",
   "author": {
     "name": "cafeed28",
     "discordID": "942752356595023874",
     "github": "cafeed28"
   },
-  "version": "1.1.2",
+  "version": "2.0.0",
   "updater": {
     "type": "github",
     "id": "cafeed28/replugged-nitrospoof"

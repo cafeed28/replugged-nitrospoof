@@ -1,28 +1,25 @@
-import { Injector, settings } from "replugged";
-import { OutgoingMessage } from "replugged/dist/renderer/modules/webpack/common/messages";
-import { Config, Emoji } from "./types";
-import { EmojiInfo, MessageParser, SelectedGuildStore } from "./webpack";
+import { Injector, common } from "replugged";
+
+import { HIDE_TEXT_SPOILERS, config } from "./misc";
+
+import { Emoji, OutgoingMessage, PremiumType } from "./types";
+import { emojiInfo, messageParser, premiumInfo, userProfileFetch } from "./webpack";
 
 const injector = new Injector();
-const config = await settings.init<Config>("com.cafeed28.NitroSpoof");
 
-const HIDE_TEXT_SPOILERS = "||\u200b||".repeat(199);
+let userPremiumType: PremiumType;
 
-function getExtension(emoji: Emoji): string {
-  if (emoji.animated) return "gif";
-  return config.get("emojiStaticExtension", "png")!;
-}
-
-// TODO: test with nitro
 function isEmojiAvailable(emoji: Emoji): boolean {
-  // Emoji not available on Discord (e.g. emoji was in slot 50+ and the server ran out of boosts)
+  // Emoji not available on Discord (e.g. GUILD_SUBSCRIPTION_UNAVAILABLE)
   if (!emoji.available) return false;
+
+  // User has Nitro
+  if (userPremiumType != PremiumType.None) return true;
 
   if (emoji.animated) return false;
 
-  // Emoji from the current guild
   // Note: getGuildId will return null if user is in DMs
-  if (emoji.guildId == SelectedGuildStore.getGuildId()) return true;
+  if (emoji.guildId == common.guilds.getGuildId()) return true;
 
   return false;
 }
@@ -34,41 +31,62 @@ function replaceEmojis(message: OutgoingMessage): void {
     escapedIds.push(match[3]);
   }
 
-  for (const emoji of message.validNonShortcutEmojis as unknown as Emoji[]) {
+  const hideLinks = config.get("emojiHideLinks", false);
+
+  for (const emoji of message.validNonShortcutEmojis) {
     if (escapedIds.includes(emoji.id)) continue;
     if (isEmojiAvailable(emoji)) continue;
 
-    const name = emoji.originalName || emoji.name;
     const prefix = emoji.animated ? "a" : "";
-    const searchString = `<${prefix}:${name}:${emoji.id}>`;
+    const name = emoji.originalName || emoji.name;
+    const search = `<${prefix}:${name}:${emoji.id}>`;
 
-    const size = config.get("emojiSize", 48);
-    const extension = getExtension(emoji);
-    const replaceUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`; // TODO: ui for this (when replugged settings ui is done)
-    const hideLinks = config.get("hideLinks", false);
+    const size = config.get("emojiSize");
+    const extension = emoji.animated ? "gif" : config.get("emojiStaticExtension");
+    const emojiUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`;
 
-    if (hideLinks && message.content.length > searchString.length) {
-      // Move emoji to the end and hide its link
-      message.content = message.content.replace(searchString, "");
+    // Move emoji to the end and hide it's link
+    if (hideLinks && message.content.length > search.length) {
+      // Remove emoji
+      message.content = message.content.replace(search, "");
+
+      // Add spoilers if needed
       if (!message.content.includes(HIDE_TEXT_SPOILERS)) message.content += HIDE_TEXT_SPOILERS;
-      message.content += ` ${replaceUrl} `;
+
+      // Add emoji
+      message.content += ` ${emojiUrl} `;
     } else {
-      message.content = message.content.replace(searchString, replaceUrl);
+      // Replace emoji with link
+      message.content = message.content.replace(search, emojiUrl);
     }
   }
 }
 
-export function start(): void {
-  injector.after(MessageParser, "parse", (_, message) => {
+export async function start(): Promise<void> {
+  // using premiumType from common.users.getCurrentUser will broke with plugins like No Nitro Upsell
+  const user = await userProfileFetch(common.users.getCurrentUser().id);
+  userPremiumType = user.premium_type ?? PremiumType.None;
+
+  injector.after(messageParser, "parse", (_, message) => {
     replaceEmojis(message);
     return message;
   });
 
-  injector.instead(EmojiInfo, "isEmojiDisabled", () => false);
-  injector.instead(EmojiInfo, "isEmojiPremiumLocked", () => false);
-  injector.instead(EmojiInfo, "getEmojiUnavailableReason", () => null);
+  // Chat emoji picker
+  injector.instead(emojiInfo, "isEmojiFiltered", () => false);
+  injector.instead(emojiInfo, "isEmojiDisabled", () => false);
+  injector.instead(emojiInfo, "isEmojiPremiumLocked", () => false);
+
+  // Emoji picker tint
+  injector.instead(emojiInfo, "getEmojiUnavailableReason", () => null);
+
+  // Stream quality
+  injector.instead(premiumInfo, "canStreamHighQuality", () => true);
+  injector.instead(premiumInfo, "canStreamMidQuality", () => true);
 }
 
 export function stop(): void {
   injector.uninjectAll();
 }
+
+export { Settings } from "./Settings";
