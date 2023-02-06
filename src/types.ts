@@ -1,7 +1,9 @@
+export type EmojiStaticExtension = "png" | "webp";
+
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
   emojiSize: number;
-  emojiStaticExtension: "png" | "webp";
+  emojiStaticExtension: EmojiStaticExtension;
   emojiHideLinks: boolean;
 };
 

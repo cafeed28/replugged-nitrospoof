@@ -1,5 +1,6 @@
 import { common, components, util } from "replugged";
 import { config } from "./misc";
+import { EmojiStaticExtension } from "./types";
 
 const { React } = common;
 const { Category, Flex, FormItem, Radio, Slider, Switch, Text } = components;
@@ -59,7 +60,7 @@ export function Settings() {
                     },
                   ]}
                   value={emojiStaticExtension.value!}
-                  onChange={(e) => emojiStaticExtension.onChange(e.value)}
+                  onChange={(e) => emojiStaticExtension.onChange(e.value as EmojiStaticExtension)}
                   size={Radio.Sizes.MEDIUM}
                 />
               </FormItem>
