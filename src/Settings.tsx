@@ -7,6 +7,7 @@ const { Category, FormItem, Radio, Slider, SwitchItem } = components;
 export function Settings() {
   const emojiHideLinks = util.useSetting(config, "emojiHideLinks");
   const emojiStaticExtension = util.useSetting(config, "emojiStaticExtension");
+  const streamQualityEnable = util.useSetting(config, "streamQualityEnable");
 
   // TODO: i18n
   return (
@@ -48,6 +49,14 @@ export function Settings() {
             onChange={(e) => emojiStaticExtension.onChange(e.value as EmojiStaticExtension)}
           />
         </FormItem>
+      </Category>
+      <Category title="Miscellaneous" note="Miscellaneous settings">
+        <SwitchItem
+          value={streamQualityEnable.value!}
+          onChange={streamQualityEnable.onChange}
+          hideBorder>
+          Spoof stream quality (Use at your own risk! May lead to account ban)
+        </SwitchItem>
       </Category>
     </div>
   );

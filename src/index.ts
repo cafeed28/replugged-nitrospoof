@@ -81,8 +81,8 @@ export async function start(): Promise<void> {
   injector.instead(emojiInfo, "getEmojiUnavailableReason", () => null);
 
   // Stream quality
-  injector.instead(premiumInfo, "canStreamHighQuality", () => true);
-  injector.instead(premiumInfo, "canStreamMidQuality", () => true);
+  injector.instead(premiumInfo, "canStreamHighQuality", () => config.get("streamQualityEnable"));
+  injector.instead(premiumInfo, "canStreamMidQuality", () => config.get("streamQualityEnable"));
 }
 
 export function stop(): void {

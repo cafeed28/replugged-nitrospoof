@@ -5,6 +5,7 @@ export type Config = {
   emojiSize: number;
   emojiStaticExtension: EmojiStaticExtension;
   emojiHideLinks: boolean;
+  streamQualityEnable: boolean;
 };
 
 export enum PremiumType {
