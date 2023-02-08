@@ -5,15 +5,13 @@ import { EmojiStaticExtension } from "./types";
 const { Category, FormItem, Radio, Slider, SwitchItem } = components;
 
 export function Settings() {
-  const emojiHideLinks = util.useSetting(config, "emojiHideLinks");
   const emojiStaticExtension = util.useSetting(config, "emojiStaticExtension");
-  const streamQualityEnable = util.useSetting(config, "streamQualityEnable");
 
   // TODO: i18n
   return (
     <div>
       <Category title="Emoji" note="Emoji spoofer settings">
-        <SwitchItem value={emojiHideLinks.value!} onChange={emojiHideLinks.onChange} hideBorder>
+        <SwitchItem {...util.useSetting(config, "emojiHideLinks", false)} hideBorder>
           Hide emoji links using Discord spoiler bug (199 trailing spoilers)
         </SwitchItem>
 
@@ -50,11 +48,9 @@ export function Settings() {
           />
         </FormItem>
       </Category>
+
       <Category title="Miscellaneous" note="Miscellaneous settings">
-        <SwitchItem
-          value={streamQualityEnable.value!}
-          onChange={streamQualityEnable.onChange}
-          hideBorder>
+        <SwitchItem {...util.useSetting(config, "streamQualityEnable")} hideBorder>
           Spoof stream quality (Use at your own risk! May lead to account ban)
         </SwitchItem>
       </Category>
