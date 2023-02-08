@@ -2,10 +2,10 @@ export type EmojiStaticExtension = "png" | "webp";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
-  emojiSize: number;
-  emojiStaticExtension: EmojiStaticExtension;
-  emojiHideLinks: boolean;
-  streamQualityEnable: boolean;
+  emojiSize?: number;
+  emojiStaticExtension?: EmojiStaticExtension;
+  emojiHideLinks?: boolean;
+  streamQualityEnable?: boolean;
 };
 
 export enum PremiumType {
