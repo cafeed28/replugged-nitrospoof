@@ -30,6 +30,12 @@ export interface Emoji {
   url: string;
   id: string;
   guildId: string;
+
+  emojiObject?: {
+    names: string[];
+    surrogates: string;
+    uniqueName: string;
+  };
 }
 
 export interface OutgoingMessage {

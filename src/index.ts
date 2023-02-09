@@ -10,6 +10,9 @@ const injector = new Injector();
 let userPremiumType: PremiumType;
 
 function isEmojiAvailable(emoji: Emoji): boolean {
+  // Unicode emoji
+  if (emoji.emojiObject) return true;
+
   // Emoji not available on Discord (e.g. GUILD_SUBSCRIPTION_UNAVAILABLE)
   if (!emoji.available) return false;
 
