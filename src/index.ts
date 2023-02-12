@@ -2,8 +2,9 @@ import { Injector, common } from "replugged";
 
 import { HIDE_TEXT_SPOILERS, config } from "./misc";
 
-import { Emoji, OutgoingMessage, PremiumType } from "./types";
-import { emojiInfo, messageParser, premiumInfo, userProfileFetch } from "./webpack";
+import { Emoji, OutgoingMessage, PremiumType, UserFetchResponse } from "./types";
+import { User } from "discord-types/general";
+import { emojiInfo, messageParser, premiumInfo, userProfileFetch, users } from "./webpack";
 
 const injector = new Injector();
 
@@ -65,13 +66,33 @@ function replaceEmojis(message: OutgoingMessage): void {
   }
 }
 
+let user: User;
+let userProfile: UserFetchResponse;
+let ready = false;
+
+async function userInit(): Promise<void> {
+  user = common.users.getCurrentUser();
+
+  if (user) userProfile = await userProfileFetch(user.id);
+  if (userProfile) userPremiumType = userProfile.premium_type ?? PremiumType.None;
+  ready = Boolean(user && userProfile);
+  console.log(ready);
+}
+
 export async function start(): Promise<void> {
   // using premiumType from common.users.getCurrentUser will broke with plugins like No Nitro Upsell
-  const user = await userProfileFetch(common.users.getCurrentUser().id);
-  userPremiumType = user.premium_type ?? PremiumType.None;
+  await userInit();
+
+  users.addChangeListener(async () => {
+    const newUser = common.users.getCurrentUser();
+    if (!newUser) return;
+    if (user && newUser.id == user.id) return;
+
+    await userInit();
+  });
 
   injector.after(messageParser, "parse", (_, message) => {
-    replaceEmojis(message);
+    if (ready) replaceEmojis(message);
     return message;
   });
 

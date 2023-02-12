@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { types, webpack } from "replugged";
-const { getByProps, getBySource, getExportsForProps } = webpack;
+const { getByProps, getBySource, getExportsForProps, waitForModule } = webpack;
 
 import { OutgoingMessage, UserFetchResponse } from "./types";
 
@@ -41,3 +41,7 @@ if (!userProfileFnName) {
 export const userProfileFetch = getExportsForProps(userProfileRaw, [userProfileFnName])![
   userProfileFnName
 ] as UserFetchFunction;
+
+export const users = await waitForModule<{
+  addChangeListener: (listener: () => void) => void;
+}>(webpack.filters.byProps("addChangeListener", "getCurrentUser"));

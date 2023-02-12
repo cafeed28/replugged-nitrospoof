@@ -1,6 +1,6 @@
 {
   "name": "replugged-nitrospoof",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Use some Nitro features without wasting your money!",
   "engines": {
     "node": ">=14.0.0"
@@ -25,6 +25,7 @@
     "@types/react": "^18.0.27",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "discord-types": "^1.3.3",
     "eslint": "^8.33.0",
     "eslint-config-dmitmel": "github:dmitmel/eslint-config-dmitmel",
     "eslint-plugin-node": "^11.1.0",
