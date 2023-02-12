@@ -79,17 +79,19 @@ async function userInit(): Promise<void> {
   console.log(ready);
 }
 
+async function userChanged(): Promise<void> {
+  const newUser = common.users.getCurrentUser();
+  if (!newUser) return;
+  if (user && newUser.id == user.id) return;
+
+  await userInit();
+}
+
 export async function start(): Promise<void> {
   // using premiumType from common.users.getCurrentUser will broke with plugins like No Nitro Upsell
   await userInit();
 
-  users.addChangeListener(async () => {
-    const newUser = common.users.getCurrentUser();
-    if (!newUser) return;
-    if (user && newUser.id == user.id) return;
-
-    await userInit();
-  });
+  users.addChangeListener(userChanged);
 
   injector.after(messageParser, "parse", (_, message) => {
     if (ready) replaceEmojis(message);
@@ -110,6 +112,7 @@ export async function start(): Promise<void> {
 }
 
 export function stop(): void {
+  users.removeChangeListener(userChanged);
   injector.uninjectAll();
 }
 
