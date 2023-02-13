@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { types, webpack } from "replugged";
-const { getByProps, getBySource, getExportsForProps, waitForModule } = webpack;
+const { filters, getFunctionBySource, waitForModule, waitForProps } = webpack;
 
-import { OutgoingMessage, UserFetchResponse } from "./types";
+import type { ObjectExports } from "replugged/dist/types";
+import type { OutgoingMessage, UserFetchResponse } from "./types";
 
 type EmojiInfo = {
   isEmojiFiltered: () => boolean;
@@ -10,39 +11,43 @@ type EmojiInfo = {
   isEmojiPremiumLocked: () => boolean;
   getEmojiUnavailableReason: () => null;
 };
-export const emojiInfo: EmojiInfo = getByProps("getEmojiUnavailableReason")!;
+export const emojiInfo = await waitForProps<string, EmojiInfo>("getEmojiUnavailableReason");
 
 type PremiumInfo = {
   canStreamHighQuality: () => boolean;
   canStreamMidQuality: () => boolean;
 };
-export const premiumInfo: PremiumInfo = getByProps("canStreamHighQuality")!;
+export const premiumInfo = await waitForProps<string, PremiumInfo>("canStreamHighQuality");
 
 type MessageParser = {
   parse: (message: unknown, content: string) => OutgoingMessage;
   parsePreprocessor: types.AnyFunction;
 };
 
-export const messageParser: MessageParser = getByProps("parse", "parsePreprocessor")!;
+export const messageParser = await waitForProps<string, MessageParser>(
+  "parse",
+  "parsePreprocessor",
+);
+
+type Users = {
+  addChangeListener: (listener: () => void) => void;
+  removeChangeListener: (listener: () => void) => void;
+};
+
+export const users = await waitForProps<string, Users>("addChangeListener", "getCurrentUser");
 
 type UserFetchFunction = (id: string) => Promise<UserFetchResponse>;
 
-const userProfileRaw = getBySource('"USER_PROFILE_FETCH_START"')!;
+const userProfileModule = await waitForModule<ObjectExports>(
+  filters.bySource('"USER_PROFILE_FETCH_START"'),
+);
 
 // 99% safe
-const userProfileFnName = Object.entries(userProfileRaw).find(([_, v]) =>
-  v.toString().includes(".apply("),
-)?.[0];
+export const userProfileFetch = getFunctionBySource<UserFetchFunction>(
+  userProfileModule,
+  ".apply(",
+)!;
 
-if (!userProfileFnName) {
+if (!userProfileFetch) {
   throw new Error("Could not find user profile fetch function");
 }
-
-export const userProfileFetch = getExportsForProps(userProfileRaw, [userProfileFnName])![
-  userProfileFnName
-] as UserFetchFunction;
-
-export const users = await waitForModule<{
-  addChangeListener: (listener: () => void) => void;
-  removeChangeListener: (listener: () => void) => void;
-}>(webpack.filters.byProps("addChangeListener", "getCurrentUser"));
