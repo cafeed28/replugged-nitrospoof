@@ -72,11 +72,10 @@ let ready = false;
 
 async function userInit(): Promise<void> {
   user = common.users.getCurrentUser();
-
   if (user) userProfile = await userProfileFetch(user.id);
   if (userProfile) userPremiumType = userProfile.premium_type ?? PremiumType.None;
+
   ready = Boolean(user && userProfile);
-  console.log(ready);
 }
 
 async function userChanged(): Promise<void> {
