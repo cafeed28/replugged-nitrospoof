@@ -44,4 +44,5 @@ export const userProfileFetch = getExportsForProps(userProfileRaw, [userProfileF
 
 export const users = await waitForModule<{
   addChangeListener: (listener: () => void) => void;
+  removeChangeListener: (listener: () => void) => void;
 }>(webpack.filters.byProps("addChangeListener", "getCurrentUser"));
