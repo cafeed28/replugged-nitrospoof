@@ -13,7 +13,6 @@ function getContext(width: number, height: number): CanvasRenderingContext2D {
 
     document.querySelector("head")?.appendChild(canvas); // doesn't work without this
   }
-  console.log(canvas);
 
   const context = canvas.getContext("2d", { willReadFrequently: true });
   if (!context) throw Error("Canvas)");
