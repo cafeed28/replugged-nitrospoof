@@ -14,8 +14,8 @@ type EmojiInfo = {
 export const emojiInfo = await waitForProps<string, EmojiInfo>("getEmojiUnavailableReason");
 
 type PremiumInfo = {
-  canStreamHighQuality: () => boolean;
-  canStreamMidQuality: () => boolean;
+  canStreamHighQuality: (...args: unknown[]) => boolean;
+  canStreamMidQuality: (...args: unknown[]) => boolean;
 };
 export const premiumInfo = await waitForProps<string, PremiumInfo>("canStreamHighQuality");
 
