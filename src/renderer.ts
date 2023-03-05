@@ -11,8 +11,9 @@ function getContext(width: number, height: number): CanvasRenderingContext2D {
     canvas.height = height;
     canvas.id = CANVAS_ID;
 
-    // document.querySelector(".sidebar-1tnWFu")?.appendChild(canvas); // used to debug canvas, but it's funny so you can uncomment it
+    document.querySelector("head")?.appendChild(canvas); // doesn't work without this
   }
+  console.log(canvas);
 
   const context = canvas.getContext("2d", { willReadFrequently: true });
   if (!context) throw Error("Canvas)");
