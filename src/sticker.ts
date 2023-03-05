@@ -33,8 +33,8 @@ function isStickerAvailable(sticker: Sticker): boolean {
   return false;
 }
 
-export async function spoofSticker(sticker: Sticker): Promise<void> {
-  if (isStickerAvailable(sticker)) return;
+export async function spoofSticker(sticker: Sticker): Promise<boolean> {
+  if (isStickerAvailable(sticker)) return false;
 
   const url = getUrl(sticker);
 
@@ -48,7 +48,7 @@ export async function spoofSticker(sticker: Sticker): Promise<void> {
       renderedImage = await renderPng(arrayBuffer);
       break;
     default: // TODO: implement Apng and Lottie
-      return;
+      return true;
   }
 
   files.addFile({
@@ -62,4 +62,6 @@ export async function spoofSticker(sticker: Sticker): Promise<void> {
       }),
     },
   });
+
+  return true;
 }
