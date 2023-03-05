@@ -1,13 +1,9 @@
-export type MediaStaticExtension = "png" | "webp";
-
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
   emojiSize?: number;
-  emojiStaticExtension?: MediaStaticExtension;
   emojiHideLinks?: boolean;
 
   stickerSize?: number;
-  stickerStaticExtension?: MediaStaticExtension;
 
   streamQualityEnable?: boolean;
 };

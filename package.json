@@ -1,6 +1,6 @@
 {
   "name": "replugged-nitrospoof",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Use some Nitro features without wasting your money!",
   "engines": {
     "node": ">=14.0.0"
@@ -31,7 +31,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.32.2",
     "prettier": "^2.8.3",
-    "replugged": "4.0.0-rc.3",
+    "replugged": "4.0.0",
     "typescript": "^4.9.5"
   }
 }

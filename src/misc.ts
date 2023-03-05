@@ -6,11 +6,9 @@ import { Config, PremiumType, UserFetchResponse } from "./types";
 
 export const config = await settings.init<Config>("com.cafeed28.NitroSpoof", {
   emojiSize: 48,
-  emojiStaticExtension: "png",
   emojiHideLinks: false,
 
   stickerSize: 160,
-  stickerStaticExtension: "png",
 
   streamQualityEnable: false,
 });

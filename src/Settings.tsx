@@ -1,12 +1,9 @@
 import { components, util } from "replugged";
 import { config } from "./misc";
-import { MediaStaticExtension } from "./types";
 
-const { Category, FormItem, Radio, Slider, SwitchItem } = components;
+const { Category, FormItem, Slider, SwitchItem } = components;
 
 export function Settings() {
-  const emojiStaticExtension = util.useSetting(config, "emojiStaticExtension");
-
   // TODO: i18n
   return (
     <div>
@@ -30,23 +27,6 @@ export function Settings() {
             />
           </div>
         </FormItem>
-
-        <FormItem title="Static Emoji Format" style={{ marginBottom: 20 }}>
-          <Radio
-            options={[
-              {
-                name: "PNG: Better quality",
-                value: "png",
-              },
-              {
-                name: "WebP: Smaller size",
-                value: "webp",
-              },
-            ]}
-            value={emojiStaticExtension.value!}
-            onChange={(e) => emojiStaticExtension.onChange(e.value as MediaStaticExtension)}
-          />
-        </FormItem>
       </Category>
 
       <Category title="Sticker" note="Sticker spoofer settings">
@@ -64,23 +44,6 @@ export function Settings() {
               }}
             />
           </div>
-        </FormItem>
-
-        <FormItem title="Static Emoji Format" style={{ marginBottom: 20 }}>
-          <Radio
-            options={[
-              {
-                name: "PNG: Better quality",
-                value: "png",
-              },
-              {
-                name: "WebP: Smaller size",
-                value: "webp",
-              },
-            ]}
-            value={emojiStaticExtension.value!}
-            onChange={(e) => emojiStaticExtension.onChange(e.value as MediaStaticExtension)}
-          />
         </FormItem>
       </Category>
 

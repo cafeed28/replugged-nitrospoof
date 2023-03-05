@@ -1,5 +1,5 @@
 import { common } from "replugged";
-import { config, userPremiumType } from "./misc";
+import { userPremiumType } from "./misc";
 import { PremiumType, Sticker, StickerType } from "./types";
 import { files } from "./webpack";
 import { renderPng } from "./renderer";
@@ -10,13 +10,11 @@ async function download(url: string): Promise<Blob> {
 }
 
 function getUrl(sticker: Sticker): string {
-  const extension = config.get("stickerStaticExtension");
-
   switch (sticker.format_type) {
     case StickerType.PNG:
-      return `https://cdn.discordapp.com/stickers/${sticker.id}.${extension}`;
+      return `https://cdn.discordapp.com/stickers/${sticker.id}.png`;
     case StickerType.APNG:
-      return `https://cdn.discordapp.com/stickers/${sticker.id}.${extension}?passtrough=true`;
+      return `https://cdn.discordapp.com/stickers/${sticker.id}.png?passtrough=true`;
     case StickerType.LOTTIE:
       return `https://cdn.discordapp.com/stickers/${sticker.id}.json`;
   }
@@ -39,7 +37,6 @@ export async function spoofSticker(sticker: Sticker): Promise<void> {
   if (isStickerAvailable(sticker)) return;
 
   const url = getUrl(sticker);
-  const extension = config.get("stickerStaticExtension");
 
   const imageFile = await download(url);
   const arrayBuffer = await imageFile.arrayBuffer();
@@ -60,7 +57,7 @@ export async function spoofSticker(sticker: Sticker): Promise<void> {
     showLargeMessageDialog: false,
     file: {
       platform: 1,
-      file: new File([renderedImage], `${sticker.id}.${extension}`, {
+      file: new File([renderedImage], `${sticker.id}.png`, {
         type: "image/png",
       }),
     },
