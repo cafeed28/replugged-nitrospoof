@@ -38,7 +38,7 @@ export function spoofEmojis(message: OutgoingMessage): void {
     const search = `<${prefix}:${name}:${emoji.id}>`;
 
     const size = config.get("emojiSize");
-    const extension = emoji.animated ? "gif" : config.get("emojiStaticExtension");
+    const extension = emoji.animated ? "gif" : "png";
     const url = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`;
 
     // Move emoji to the end and hide it's link
