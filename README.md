@@ -12,6 +12,8 @@ Use some Nitro features without wasting your money!
 - - Can use emojis if they are unavailable due to a lack of boosts (they are unavaiable with nitro,
     use this plugin even if you have nitro 😼)
 - - Removes unavailable emoji tint in emoji picker
+- Send stickers as pictures (only png yet)
+- - TODO: apng and lottie support
 - Stream in 1080p/Source 60 fps quality (use at your own risk! may lead to account ban)
 - Doesn't spoof premiumType
 

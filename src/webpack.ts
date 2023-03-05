@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { types, webpack } from "replugged";
-const { getByProps, getBySource, getExportsForProps, waitForModule } = webpack;
+import { webpack } from "replugged";
+const { filters, getFunctionBySource, waitForModule, waitForProps } = webpack;
 
-import { OutgoingMessage, UserFetchResponse } from "./types";
+import type { AnyFunction, ObjectExports } from "replugged/dist/types";
+import type { Attachment, OutgoingMessage, UserFetchResponse } from "./types";
 
 type EmojiInfo = {
   isEmojiFiltered: () => boolean;
@@ -10,39 +11,77 @@ type EmojiInfo = {
   isEmojiPremiumLocked: () => boolean;
   getEmojiUnavailableReason: () => null;
 };
-export const emojiInfo: EmojiInfo = getByProps("getEmojiUnavailableReason")!;
+export const emojiInfo = await waitForProps<string, EmojiInfo>("getEmojiUnavailableReason");
 
 type PremiumInfo = {
   canStreamHighQuality: () => boolean;
   canStreamMidQuality: () => boolean;
 };
-export const premiumInfo: PremiumInfo = getByProps("canStreamHighQuality")!;
+export const premiumInfo = await waitForProps<string, PremiumInfo>("canStreamHighQuality");
 
 type MessageParser = {
   parse: (message: unknown, content: string) => OutgoingMessage;
-  parsePreprocessor: types.AnyFunction;
+  parsePreprocessor: AnyFunction;
 };
 
-export const messageParser: MessageParser = getByProps("parse", "parsePreprocessor")!;
+export const messageParser = await waitForProps<string, MessageParser>(
+  "parse",
+  "parsePreprocessor",
+);
+
+type Users = {
+  addChangeListener: (listener: () => void) => void;
+  removeChangeListener: (listener: () => void) => void;
+};
+
+export const users = await waitForProps<string, Users>("addChangeListener", "getCurrentUser");
+
+type AttachmentUploader = {
+  addFile: (attachment: Attachment) => void;
+};
+
+export const files = await waitForModule<AttachmentUploader>(
+  filters.bySource('"UPLOAD_ATTACHMENT_ADD_FILES"'),
+);
 
 type UserFetchFunction = (id: string) => Promise<UserFetchResponse>;
 
-const userProfileRaw = getBySource('"USER_PROFILE_FETCH_START"')!;
+const userProfileModule = await waitForModule<ObjectExports>(
+  filters.bySource('"USER_PROFILE_FETCH_START"'),
+);
 
 // 99% safe
-const userProfileFnName = Object.entries(userProfileRaw).find(([_, v]) =>
-  v.toString().includes(".apply("),
-)?.[0];
+export const userProfileFetch = getFunctionBySource<UserFetchFunction>(
+  userProfileModule,
+  ".apply(",
+)!;
 
-if (!userProfileFnName) {
+if (!userProfileFetch) {
   throw new Error("Could not find user profile fetch function");
 }
 
-export const userProfileFetch = getExportsForProps(userProfileRaw, [userProfileFnName])![
-  userProfileFnName
-] as UserFetchFunction;
+type AnyModule = {
+  [key: string]: AnyFunction;
+};
 
-export const users = await waitForModule<{
-  addChangeListener: (listener: () => void) => void;
-  removeChangeListener: (listener: () => void) => void;
-}>(webpack.filters.byProps("addChangeListener", "getCurrentUser"));
+export const stickerInfo = await waitForModule<AnyModule>(
+  filters.bySource(".ANIMATE_ON_INTERACTION?"),
+);
+export const shouldAttachSticker: string = webpack.getFunctionKeyBySource(
+  stickerInfo,
+  ".EXPRESSION_SUGGESTIONS:",
+)!;
+
+export const stickerSendability = await waitForModule<AnyModule>(filters.bySource(".SENDABLE=0"));
+export const isSendableSticker: string = webpack.getFunctionKeyBySource(
+  stickerSendability as ObjectExports,
+  ".SENDABLE}",
+)!;
+
+export const stickerPreview = await waitForModule<AnyModule>(
+  filters.bySource('"ADD_STICKER_PREVIEW"'),
+);
+export const addStickerPreview: string = webpack.getFunctionKeyBySource(
+  stickerPreview as ObjectExports,
+  '"ADD_STICKER_PREVIEW"',
+)!;

@@ -1,6 +1,6 @@
 import { components, util } from "replugged";
 import { config } from "./misc";
-import { EmojiStaticExtension } from "./types";
+import { MediaStaticExtension } from "./types";
 
 const { Category, FormItem, Radio, Slider, SwitchItem } = components;
 
@@ -44,7 +44,42 @@ export function Settings() {
               },
             ]}
             value={emojiStaticExtension.value!}
-            onChange={(e) => emojiStaticExtension.onChange(e.value as EmojiStaticExtension)}
+            onChange={(e) => emojiStaticExtension.onChange(e.value as MediaStaticExtension)}
+          />
+        </FormItem>
+      </Category>
+
+      <Category title="Sticker" note="Sticker spoofer settings">
+        <FormItem title="Sticker Size" style={{ marginBottom: 20 }}>
+          <div style={{ marginTop: 20 }}>
+            <Slider
+              {...util.useSetting(config, "stickerSize", 160)}
+              markers={[128, 136, 144, 152, 160, 168, 176, 192]}
+              stickToMarkers={true}
+              defaultValue={160}
+              minValue={128}
+              maxValue={192}
+              onMarkerRender={(e: number) => {
+                return `${e}px`;
+              }}
+            />
+          </div>
+        </FormItem>
+
+        <FormItem title="Static Emoji Format" style={{ marginBottom: 20 }}>
+          <Radio
+            options={[
+              {
+                name: "PNG: Better quality",
+                value: "png",
+              },
+              {
+                name: "WebP: Smaller size",
+                value: "webp",
+              },
+            ]}
+            value={emojiStaticExtension.value!}
+            onChange={(e) => emojiStaticExtension.onChange(e.value as MediaStaticExtension)}
           />
         </FormItem>
       </Category>
