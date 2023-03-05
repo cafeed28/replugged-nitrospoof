@@ -58,9 +58,15 @@ export async function start(): Promise<void> {
   });
 
   // Stream quality
-  // FIXME: streamQualityEnable false will disable high quality for nitro users
-  injector.instead(premiumInfo, "canStreamHighQuality", () => config.get("streamQualityEnable"));
-  injector.instead(premiumInfo, "canStreamMidQuality", () => config.get("streamQualityEnable"));
+  injector.instead(premiumInfo, "canStreamHighQuality", (_, orig) => {
+    if (!config.get("streamQualityEnable")) return orig(_);
+    return true;
+  });
+
+  injector.instead(premiumInfo, "canStreamMidQuality", (_, orig) => {
+    if (!config.get("streamQualityEnable")) return orig(_);
+    return true;
+  });
 }
 
 export function stop(): void {
