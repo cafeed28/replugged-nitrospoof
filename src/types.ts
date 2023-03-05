@@ -1,18 +1,22 @@
-export type EmojiStaticExtension = "png" | "webp";
+export type MediaStaticExtension = "png" | "webp";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
   emojiSize?: number;
-  emojiStaticExtension?: EmojiStaticExtension;
+  emojiStaticExtension?: MediaStaticExtension;
   emojiHideLinks?: boolean;
+
+  stickerSize?: number;
+  stickerStaticExtension?: MediaStaticExtension;
+
   streamQualityEnable?: boolean;
 };
 
 export enum PremiumType {
-  None = 0,
-  Tier1,
-  Tier2,
-  Tier3,
+  NONE = 0,
+  TIER_1,
+  TIER_2,
+  TIER_3,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -38,7 +42,36 @@ export interface Emoji {
   };
 }
 
+export enum StickerType {
+  PNG = 1,
+  APNG,
+  LOTTIE,
+}
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface Sticker {
+  name: string;
+  description: string;
+  id: string;
+  guild_id: string;
+  available: boolean;
+  format_type: StickerType;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
 export interface OutgoingMessage {
   content: string;
   validNonShortcutEmojis: Emoji[];
+}
+
+interface AttachmentFile {
+  file: File;
+  platform: number; // TODD: Find enum
+}
+
+export interface Attachment {
+  file: AttachmentFile;
+  channelId: string;
+  showLargeMessageDialog: boolean;
+  draftType: number; // TODD: Find enum
 }
