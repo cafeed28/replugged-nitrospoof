@@ -1,4 +1,4 @@
-import { Injector } from "replugged";
+import { Injector, common } from "replugged";
 
 import { config, ready, userChanged, userInit } from "./misc";
 
@@ -42,8 +42,19 @@ export async function start(): Promise<void> {
   // Stickers
   injector.instead(stickerInfo, shouldAttachSticker, () => true);
   injector.instead(stickerSendability, isSendableSticker, () => true);
-  injector.instead(stickerPreview, addStickerPreview, async ([_, sticker]) => {
-    if (ready) await spoofSticker(sticker);
+
+  injector.instead(stickerPreview, addStickerPreview, async ([channelId, sticker, draftType]) => {
+    if (ready) {
+      const spoofed = await spoofSticker(sticker);
+      if (!spoofed) {
+        common.fluxDispatcher.dispatch({
+          type: "ADD_STICKER_PREVIEW",
+          channelId,
+          sticker,
+          draftType,
+        });
+      }
+    }
   });
 
   // Stream quality
