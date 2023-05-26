@@ -1,6 +1,6 @@
 import { common } from "replugged";
 import { userPremiumType } from "./misc";
-import { PremiumType, Sticker, StickerType } from "./types";
+import { PremiumType, Sticker, StickerFormat, StickerType } from "./types";
 import { files } from "./webpack";
 import { renderPng } from "./renderer";
 
@@ -11,16 +11,18 @@ async function download(url: string): Promise<Blob> {
 
 function getUrl(sticker: Sticker): string {
   switch (sticker.format_type) {
-    case StickerType.PNG:
+    case StickerFormat.PNG:
       return `https://cdn.discordapp.com/stickers/${sticker.id}.png`;
-    case StickerType.APNG:
+    case StickerFormat.APNG:
       return `https://cdn.discordapp.com/stickers/${sticker.id}.png?passtrough=true`;
-    case StickerType.LOTTIE:
+    case StickerFormat.LOTTIE:
       return `https://cdn.discordapp.com/stickers/${sticker.id}.json`;
   }
 }
 
 function isStickerAvailable(sticker: Sticker): boolean {
+  if (sticker.type == StickerType.STANDARD) return true;
+
   // Emoji not available on Discord (e.g. GUILD_SUBSCRIPTION_UNAVAILABLE)
   if (!sticker.available) return false;
 
@@ -44,7 +46,7 @@ export async function spoofSticker(sticker: Sticker): Promise<boolean> {
   let renderedImage: Blob;
 
   switch (sticker.format_type) {
-    case StickerType.PNG:
+    case StickerFormat.PNG:
       renderedImage = await renderPng(arrayBuffer);
       break;
     default: // TODO: implement Apng and Lottie

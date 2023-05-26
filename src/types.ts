@@ -39,6 +39,11 @@ export interface Emoji {
 }
 
 export enum StickerType {
+  STANDARD = 1,
+  GUILD,
+}
+
+export enum StickerFormat {
   PNG = 1,
   APNG,
   LOTTIE,
@@ -51,7 +56,8 @@ export interface Sticker {
   id: string;
   guild_id: string;
   available: boolean;
-  format_type: StickerType;
+  type: StickerType;
+  format_type: StickerFormat;
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
