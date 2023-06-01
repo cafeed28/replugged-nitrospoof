@@ -6,6 +6,8 @@ export type Config = {
   stickerSize?: number;
 
   streamQualityEnable?: boolean;
+
+  debugMode?: boolean;
 };
 
 export enum PremiumType {

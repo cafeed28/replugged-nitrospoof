@@ -1,4 +1,4 @@
-import { common, settings } from "replugged";
+import { Logger, common, settings } from "replugged";
 import { userProfileFetch } from "./webpack";
 
 import { User } from "discord-types/general";
@@ -11,7 +11,11 @@ export const config = await settings.init<Config>("com.cafeed28.NitroSpoof", {
   stickerSize: 160,
 
   streamQualityEnable: false,
+
+  debugMode: false,
 });
+
+export const logger = Logger.plugin("NitroSpoof");
 
 export const HIDE_TEXT_SPOILERS = "||\u200b||".repeat(199);
 

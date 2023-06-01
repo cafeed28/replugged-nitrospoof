@@ -51,6 +51,9 @@ export function Settings() {
         <SwitchItem {...util.useSetting(config, "streamQualityEnable")} hideBorder>
           Spoof stream quality (Use at your own risk! May lead to account ban)
         </SwitchItem>
+        <SwitchItem {...util.useSetting(config, "debugMode")} hideBorder>
+          Enable verbose logging in console
+        </SwitchItem>
       </Category>
     </div>
   );

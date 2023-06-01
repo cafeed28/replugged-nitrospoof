@@ -1,5 +1,5 @@
 import { common } from "replugged";
-import { userPremiumType } from "./misc";
+import { config, logger, userPremiumType } from "./misc";
 import { PremiumType, Sticker, StickerFormat, StickerType } from "./types";
 import { files } from "./webpack";
 import { renderPng } from "./renderer";
@@ -21,6 +21,12 @@ function getUrl(sticker: Sticker): string {
 }
 
 function isStickerAvailable(sticker: Sticker): boolean {
+  if (config.get("debugMode")) {
+    logger.log("sticker:", sticker);
+    logger.log("userPremiumType:", userPremiumType);
+    logger.log("common.guilds.getGuildId:", common.guilds.getGuildId());
+  }
+
   if (sticker.type == StickerType.STANDARD) return true;
 
   // Emoji not available on Discord (e.g. GUILD_SUBSCRIPTION_UNAVAILABLE)

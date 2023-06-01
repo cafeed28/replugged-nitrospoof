@@ -1,6 +1,6 @@
 import { Injector } from "replugged";
 
-import { config, ready, userChanged, userInit } from "./misc";
+import { config, logger, ready, userChanged, userInit } from "./misc";
 
 import {
   addStickerPreview,
@@ -21,6 +21,12 @@ import { spoofSticker } from "./sticker";
 const injector = new Injector();
 
 export async function start(): Promise<void> {
+  if (config.get("debugMode")) {
+    logger.log("stickerInfo:", stickerInfo);
+    logger.log("stickerSendability:", stickerSendability);
+    logger.log("stickerPreview:", stickerPreview);
+  }
+
   // using premiumType from common.users.getCurrentUser will broke with plugins like No Nitro Upsell
   await userInit();
 
@@ -44,8 +50,17 @@ export async function start(): Promise<void> {
   injector.instead(stickerSendability, isSendableSticker, () => true);
 
   injector.instead(stickerPreview, addStickerPreview, async ([channelId, sticker, d], orig) => {
+    const debugMode = config.get("debugMode");
+    if (debugMode) {
+      logger.log("ready:", ready);
+    }
+
     if (ready) {
       const spoofed = await spoofSticker(sticker);
+      if (debugMode) {
+        logger.log("orig:", orig);
+      }
+
       if (!spoofed) {
         orig(channelId, sticker, d);
       }
