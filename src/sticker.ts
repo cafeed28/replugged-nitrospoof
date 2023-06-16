@@ -33,7 +33,7 @@ function isStickerAvailable(sticker: Sticker): boolean {
   if (!sticker.available) return false;
 
   // User has Nitro
-  if (userPremiumType != PremiumType.NONE) return true;
+  if (userPremiumType != PremiumType.NONE && userPremiumType != PremiumType.CLASSIC) return true;
 
   // Note: getGuildId will return null if user is in DMs
   if (sticker.guild_id == common.guilds.getGuildId()) return true;

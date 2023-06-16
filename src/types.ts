@@ -12,9 +12,9 @@ export type Config = {
 
 export enum PremiumType {
   NONE = 0,
-  TIER_1,
-  TIER_2,
-  TIER_3,
+  CLASSIC,
+  NITRO,
+  BASIC,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
