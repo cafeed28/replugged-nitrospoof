@@ -1,8 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type Config = {
+  emojiSpoof?: boolean;
   emojiSize?: number;
   emojiHideLinks?: boolean;
 
+  stickerSpoof?: boolean;
   stickerSize?: number;
 
   streamQualityEnable?: boolean;

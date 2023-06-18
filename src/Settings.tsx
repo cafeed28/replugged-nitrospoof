@@ -8,6 +8,10 @@ export function Settings() {
   return (
     <div>
       <Category title="Emoji" note="Emoji spoofer settings">
+        <SwitchItem {...util.useSetting(config, "emojiSpoof", true)} hideBorder>
+          Enable emoji spoof
+        </SwitchItem>
+
         <SwitchItem {...util.useSetting(config, "emojiHideLinks", false)} hideBorder>
           Hide emoji links using Discord spoiler bug (199 trailing spoilers)
         </SwitchItem>
@@ -30,6 +34,10 @@ export function Settings() {
       </Category>
 
       <Category title="Sticker" note="Sticker spoofer settings">
+        <SwitchItem {...util.useSetting(config, "stickerSpoof", true)} hideBorder>
+          Enable sticker spoof
+        </SwitchItem>
+
         <FormItem title="Sticker Size" style={{ marginBottom: 20 }}>
           <div style={{ marginTop: 20 }}>
             <Slider

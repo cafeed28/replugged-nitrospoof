@@ -6,10 +6,10 @@ import type { AnyFunction, ObjectExports } from "replugged/dist/types";
 import type { Attachment, OutgoingMessage, UserFetchResponse } from "./types";
 
 type EmojiInfo = {
-  isEmojiFiltered: () => boolean;
-  isEmojiDisabled: () => boolean;
-  isEmojiPremiumLocked: () => boolean;
-  getEmojiUnavailableReason: () => null;
+  isEmojiFiltered: (...args: unknown[]) => boolean;
+  isEmojiDisabled: (...args: unknown[]) => boolean;
+  isEmojiPremiumLocked: (...args: unknown[]) => boolean;
+  getEmojiUnavailableReason: (...args: unknown[]) => null;
 };
 export const emojiInfo = await waitForProps<string, EmojiInfo>("getEmojiUnavailableReason");
 

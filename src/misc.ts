@@ -5,9 +5,11 @@ import { User } from "discord-types/general";
 import { Config, PremiumType, UserFetchResponse } from "./types";
 
 export const config = await settings.init<Config>("com.cafeed28.NitroSpoof", {
+  emojiSpoof: true,
   emojiSize: 48,
   emojiHideLinks: false,
 
+  stickerSpoof: true,
   stickerSize: 160,
 
   streamQualityEnable: false,

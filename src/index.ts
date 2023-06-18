@@ -33,23 +33,48 @@ export async function start(): Promise<void> {
   users.addChangeListener(userChanged);
 
   injector.after(messageParser, "parse", (_, message) => {
-    if (ready) spoofEmojis(message);
+    if (ready && config.get("emojiSpoof")) spoofEmojis(message);
     return message;
   });
 
   // Chat emoji picker
-  injector.instead(emojiInfo, "isEmojiFiltered", () => false);
-  injector.instead(emojiInfo, "isEmojiDisabled", () => false);
-  injector.instead(emojiInfo, "isEmojiPremiumLocked", () => false);
+  injector.instead(emojiInfo, "isEmojiFiltered", (args, orig) => {
+    if (!config.get("emojiSpoof")) return orig(...args);
+    return false;
+  });
+
+  injector.instead(emojiInfo, "isEmojiDisabled", (args, orig) => {
+    if (!config.get("emojiSpoof")) return orig(...args);
+    return false;
+  });
+
+  injector.instead(emojiInfo, "isEmojiPremiumLocked", (args, orig) => {
+    if (!config.get("emojiSpoof")) return orig(...args);
+    return false;
+  });
 
   // Emoji picker tint
-  injector.instead(emojiInfo, "getEmojiUnavailableReason", () => null);
+  injector.instead(emojiInfo, "getEmojiUnavailableReason", (args, orig) => {
+    if (!config.get("emojiSpoof")) return orig(...args);
+    return null;
+  });
 
   // Stickers
-  injector.instead(stickerInfo, shouldAttachSticker, () => true);
-  injector.instead(stickerSendability, isSendableSticker, () => true);
+  injector.instead(stickerInfo, shouldAttachSticker, (args, orig) => {
+    if (!config.get("stickerSpoof")) return orig(args);
+    return true;
+  });
 
-  injector.instead(stickerPreview, addStickerPreview, async ([channelId, sticker, d], orig) => {
+  injector.instead(stickerSendability, isSendableSticker, (args, orig) => {
+    if (!config.get("stickerSpoof")) return orig(args);
+    return true;
+  });
+
+  injector.instead(stickerPreview, addStickerPreview, async (args, orig) => {
+    if (!config.get("stickerSpoof")) return orig(args);
+
+    const [channelId, sticker, d] = args;
+
     const debugMode = config.get("debugMode");
     if (debugMode) {
       logger.log("ready:", ready);
@@ -68,13 +93,13 @@ export async function start(): Promise<void> {
   });
 
   // Stream quality
-  injector.instead(premiumInfo, "canStreamHighQuality", (_, orig) => {
-    if (!config.get("streamQualityEnable")) return orig(_);
+  injector.instead(premiumInfo, "canStreamHighQuality", (args, orig) => {
+    if (!config.get("streamQualityEnable")) return orig(args);
     return true;
   });
 
-  injector.instead(premiumInfo, "canStreamMidQuality", (_, orig) => {
-    if (!config.get("streamQualityEnable")) return orig(_);
+  injector.instead(premiumInfo, "canStreamMidQuality", (args, orig) => {
+    if (!config.get("streamQualityEnable")) return orig(args);
     return true;
   });
 }
