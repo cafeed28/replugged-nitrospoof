@@ -7,12 +7,13 @@
     "discordID": "942752356595023874",
     "github": "cafeed28"
   },
-  "version": "2.1.7",
+  "version": "2.1.8",
   "updater": {
     "type": "store",
     "id": "com.cafeed28.NitroSpoof"
   },
   "license": "MIT",
   "type": "replugged-plugin",
-  "renderer": "src/index.ts"
+  "renderer": "src/index.ts",
+  "source": "https://github.com/cafeed28/replugged-nitrospoof"
 }
