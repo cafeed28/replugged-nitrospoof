@@ -3,7 +3,7 @@ import { config } from "./misc";
 
 const { Category, FormItem, Slider, SwitchItem } = components;
 
-export function Settings() {
+export function Settings(): JSX.Element {
   // TODO: i18n
   return (
     <div>
