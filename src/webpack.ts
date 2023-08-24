@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { webpack } from "replugged";
-const { filters, getFunctionBySource, waitForModule, waitForProps } = webpack;
+const { filters, waitForModule, waitForProps } = webpack;
 
 import type { AnyFunction, ObjectExports } from "replugged/dist/types";
-import type { Attachment, OutgoingMessage, UserFetchResponse } from "./types";
+import type { Attachment, OutgoingMessage } from "./types";
 
 type EmojiInfo = {
   isEmojiFiltered: (...args: unknown[]) => boolean;
@@ -41,22 +41,6 @@ type AttachmentUploader = {
 export const files = await waitForModule<AttachmentUploader>(
   filters.bySource('"UPLOAD_ATTACHMENT_ADD_FILES"'),
 );
-
-type UserFetchFunction = (id: string) => Promise<UserFetchResponse>;
-
-const userProfileModule = await waitForModule<ObjectExports>(
-  filters.bySource('"USER_PROFILE_FETCH_START"'),
-);
-
-// 99% safe
-export const userProfileFetch = getFunctionBySource<UserFetchFunction>(
-  userProfileModule,
-  ".apply(",
-)!;
-
-if (!userProfileFetch) {
-  throw new Error("Could not find user profile fetch function");
-}
 
 type AnyModule = {
   [key: string]: AnyFunction;

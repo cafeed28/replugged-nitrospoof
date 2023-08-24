@@ -1,6 +1,6 @@
 import { Injector } from "replugged";
 
-import { config, logger, ready, userChanged, userInit } from "./misc";
+import { config, logger, userChanged, userInit } from "./misc";
 
 import {
   addStickerPreview,
@@ -20,7 +20,7 @@ import { spoofSticker } from "./sticker";
 
 const injector = new Injector();
 
-export async function start(): Promise<void> {
+export function start(): void {
   if (config.get("debugMode")) {
     logger.log("messageParser:", messageParser);
     logger.log("emojiInfo:", emojiInfo);
@@ -31,13 +31,12 @@ export async function start(): Promise<void> {
     logger.log("users:", users);
   }
 
-  // using premiumType from common.users.getCurrentUser will broke with plugins like No Nitro Upsell
-  await userInit();
+  userInit();
 
   users.addChangeListener(userChanged);
 
   injector.after(messageParser, "parse", (_, message) => {
-    if (ready && config.get("emojiSpoof")) spoofEmojis(message);
+    if (config.get("emojiSpoof")) spoofEmojis(message);
     return message;
   });
 
@@ -80,19 +79,14 @@ export async function start(): Promise<void> {
     const [channelId, sticker, d] = args;
 
     const debugMode = config.get("debugMode");
+
+    const spoofed = await spoofSticker(sticker);
     if (debugMode) {
-      logger.log("ready:", ready);
+      logger.log("orig:", orig);
     }
 
-    if (ready) {
-      const spoofed = await spoofSticker(sticker);
-      if (debugMode) {
-        logger.log("orig:", orig);
-      }
-
-      if (!spoofed) {
-        orig(channelId, sticker, d);
-      }
+    if (!spoofed) {
+      orig(channelId, sticker, d);
     }
   });
 

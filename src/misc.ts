@@ -1,8 +1,7 @@
 import { Logger, common, settings } from "replugged";
-import { userProfileFetch } from "./webpack";
 
 import { User } from "discord-types/general";
-import { Config, PremiumType, UserFetchResponse } from "./types";
+import { Config, PremiumType } from "./types";
 
 export const config = await settings.init<Config>("com.cafeed28.NitroSpoof", {
   emojiSpoof: true,
@@ -24,21 +23,19 @@ export const HIDE_TEXT_SPOILERS = "||\u200b||".repeat(199);
 export let userPremiumType: PremiumType;
 
 let user: User;
-let userProfile: UserFetchResponse;
-export let ready = false;
 
-export async function userInit(): Promise<void> {
+export function userInit(): void {
   user = common.users.getCurrentUser();
-  if (user) userProfile = await userProfileFetch(user.id);
-  if (userProfile) userPremiumType = userProfile.premium_type ?? PremiumType.NONE;
+  if (!user) return;
 
-  ready = Boolean(user && userProfile);
+  // @ts-expect-error https://github.com/asportnoy/no-nitro-upsell#for-plugin-developers
+  userPremiumType = user._realPremiumType ?? user.premiumType ?? PremiumType.NONE;
 }
 
-export async function userChanged(): Promise<void> {
+export function userChanged(): void {
   const newUser = common.users.getCurrentUser();
   if (!newUser) return;
   if (user && newUser.id == user.id) return;
 
-  await userInit();
+  userInit();
 }

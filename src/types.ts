@@ -19,12 +19,6 @@ export enum PremiumType {
   BASIC,
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
-export interface UserFetchResponse {
-  premium_type: PremiumType | null;
-}
-/* eslint-enable @typescript-eslint/naming-convention */
-
 export interface Emoji {
   animated: boolean;
   available: boolean;
