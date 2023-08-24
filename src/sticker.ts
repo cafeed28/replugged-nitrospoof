@@ -60,7 +60,7 @@ export async function spoofSticker(sticker: Sticker): Promise<boolean> {
   }
 
   files.addFile({
-    channelId: common.channels.getChannelId()!,
+    channelId: common.channels.getCurrentlySelectedChannelId()!,
     draftType: 0,
     showLargeMessageDialog: false,
     file: {
