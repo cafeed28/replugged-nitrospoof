@@ -17,6 +17,7 @@ import {
 
 import { spoofEmojis } from "./emoji";
 import { spoofSticker } from "./sticker";
+import { Sticker, StickerFormat, StickerType } from "./types";
 
 const injector = new Injector();
 
@@ -70,7 +71,11 @@ export function start(): void {
 
   injector.instead(stickerSendability, isSendableSticker, (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(args);
-    return true;
+    const sticker = args[0] as Sticker;
+
+    if (sticker.type == StickerType.STANDARD) return true;
+    if (sticker.format_type == StickerFormat.PNG) return true;
+    return false;
   });
 
   injector.instead(stickerPreview, addStickerPreview, async (args, orig) => {
