@@ -11,30 +11,28 @@ type EmojiInfo = {
   isEmojiPremiumLocked: (...args: unknown[]) => boolean;
   getEmojiUnavailableReason: (...args: unknown[]) => null;
 };
-export const emojiInfo = await waitForProps<string, EmojiInfo>("getEmojiUnavailableReason");
+export const emojiInfo = await waitForProps<EmojiInfo>("getEmojiUnavailableReason");
 
 type PremiumInfo = {
   canStreamHighQuality: (...args: unknown[]) => boolean;
   canStreamMidQuality: (...args: unknown[]) => boolean;
 };
-export const premiumInfo = await waitForProps<string, PremiumInfo>("canStreamHighQuality");
+export const premiumInfo = await waitForProps<PremiumInfo>("canStreamHighQuality");
 
 type MessageParser = {
   parse: (message: unknown, content: string) => OutgoingMessage;
   parsePreprocessor: AnyFunction;
 };
 
-export const messageParser = await waitForProps<string, MessageParser>(
-  "parse",
-  "parsePreprocessor",
-);
+export const messageParser = await waitForProps<MessageParser>("parse", "parsePreprocessor");
 
 type Users = {
   addChangeListener: (listener: () => void) => void;
   removeChangeListener: (listener: () => void) => void;
+  getCurrentUser: unknown;
 };
 
-export const users = await waitForProps<string, Users>("addChangeListener", "getCurrentUser");
+export const users = await waitForProps<Users>("addChangeListener", "getCurrentUser");
 
 type AttachmentUploader = {
   addFile: (attachment: Attachment) => void;

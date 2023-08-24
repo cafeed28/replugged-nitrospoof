@@ -22,9 +22,13 @@ const injector = new Injector();
 
 export async function start(): Promise<void> {
   if (config.get("debugMode")) {
+    logger.log("messageParser:", messageParser);
+    logger.log("emojiInfo:", emojiInfo);
     logger.log("stickerInfo:", stickerInfo);
     logger.log("stickerSendability:", stickerSendability);
     logger.log("stickerPreview:", stickerPreview);
+    logger.log("premiumInfo:", premiumInfo);
+    logger.log("users:", users);
   }
 
   // using premiumType from common.users.getCurrentUser will broke with plugins like No Nitro Upsell

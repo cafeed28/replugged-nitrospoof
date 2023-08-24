@@ -35,24 +35,24 @@ rules:
   "@typescript-eslint/no-unused-vars": error
 
 overrides:
-  - files: "**/*.ts"
+  - files: "**/*.{ts,tsx}"
     extends: eslint-config-dmitmel/presets/typescript-addon
     rules:
       node/no-missing-import: off
       eqeqeq: off
-      "@typescript-eslint/no-dynamic-delete": off
+      \@typescript-eslint/no-dynamic-delete: off
       no-return-assign: off
       no-void: off
       consistent-return: off
 
-  - files: "**/src/**/*.ts"
+  - files: "**/src/**/*.{ts,tsx}"
     extends: eslint-config-dmitmel/rules/typescript/with-type-checking
 
   - files: "**/*.d.ts"
     rules:
       no-var: off
 
-  - files: "src/**/*.ts"
+  - files: "src/**/*.{ts,tsx}"
     parserOptions:
       project: tsconfig.json
 
