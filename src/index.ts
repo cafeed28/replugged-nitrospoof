@@ -65,12 +65,12 @@ export function start(): void {
 
   // Stickers
   injector.instead(stickerInfo, shouldAttachSticker, (args, orig) => {
-    if (!config.get("stickerSpoof")) return orig(args);
+    if (!config.get("stickerSpoof")) return orig(...args);
     return true;
   });
 
   injector.instead(stickerSendability, isSendableSticker, (args, orig) => {
-    if (!config.get("stickerSpoof")) return orig(args);
+    if (!config.get("stickerSpoof")) return orig(...args);
     const sticker = args[0] as Sticker;
 
     if (sticker.type == StickerType.STANDARD) return true;
@@ -79,7 +79,7 @@ export function start(): void {
   });
 
   injector.instead(stickerPreview, addStickerPreview, async (args, orig) => {
-    if (!config.get("stickerSpoof")) return orig(args);
+    if (!config.get("stickerSpoof")) return orig(...args);
 
     const [channelId, sticker, d] = args;
 
@@ -96,13 +96,8 @@ export function start(): void {
   });
 
   // Stream quality
-  injector.instead(premiumInfo, "canStreamHighQuality", (args, orig) => {
-    if (!config.get("streamQualityEnable")) return orig(args);
-    return true;
-  });
-
-  injector.instead(premiumInfo, "canStreamMidQuality", (args, orig) => {
-    if (!config.get("streamQualityEnable")) return orig(args);
+  injector.instead(premiumInfo, "canStreamQuality", (args, orig) => {
+    if (!config.get("streamQualityEnable")) return orig(...args);
     return true;
   });
 }
