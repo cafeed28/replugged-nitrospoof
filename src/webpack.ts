@@ -14,10 +14,9 @@ type EmojiInfo = {
 export const emojiInfo = await waitForProps<EmojiInfo>("getEmojiUnavailableReason");
 
 type PremiumInfo = {
-  canStreamHighQuality: (...args: unknown[]) => boolean;
-  canStreamMidQuality: (...args: unknown[]) => boolean;
+  canStreamQuality: (...args: unknown[]) => boolean;
 };
-export const premiumInfo = await waitForProps<PremiumInfo>("canStreamHighQuality");
+export const premiumInfo = await waitForProps<PremiumInfo>("canStreamQuality");
 
 type MessageParser = {
   parse: (message: unknown, content: string) => OutgoingMessage;

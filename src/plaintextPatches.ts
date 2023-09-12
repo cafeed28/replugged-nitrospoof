@@ -2,8 +2,8 @@ import { PlaintextPatch } from "replugged/dist/types";
 
 export default [
   {
-    // based on Canary df4e5b4
-    find: "canStreamHighQuality:function",
+    // based on Canary 7e44454
+    find: "canStreamQuality:function",
     replacements: [
       {
         // Removes all Object.freeze to allow PremiumInfo patching.

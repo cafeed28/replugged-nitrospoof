@@ -96,12 +96,7 @@ export function start(): void {
   });
 
   // Stream quality
-  injector.instead(premiumInfo, "canStreamHighQuality", (args, orig) => {
-    if (!config.get("streamQualityEnable")) return orig(args);
-    return true;
-  });
-
-  injector.instead(premiumInfo, "canStreamMidQuality", (args, orig) => {
+  injector.instead(premiumInfo, "canStreamQuality", (args, orig) => {
     if (!config.get("streamQualityEnable")) return orig(args);
     return true;
   });
