@@ -7,7 +7,7 @@
     "discordID": "942752356595023874",
     "github": "cafeed28"
   },
-  "version": "2.1.10",
+  "version": "2.1.11",
   "updater": {
     "type": "store",
     "id": "com.cafeed28.NitroSpoof"
@@ -16,5 +16,6 @@
   "type": "replugged-plugin",
   "renderer": "src/index.ts",
   "plaintextPatches": "src/plaintextPatches.ts",
-  "source": "https://github.com/cafeed28/replugged-nitrospoof"
+  "source": "https://github.com/cafeed28/replugged-nitrospoof",
+  "image": "https://cdn.discordapp.com/attachments/1026314163007529020/1156935460602527744/ezgif.com-video-to-gif.gif"
 }
