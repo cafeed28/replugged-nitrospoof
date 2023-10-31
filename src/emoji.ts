@@ -22,16 +22,17 @@ function isEmojiAvailable(emoji: Emoji): boolean {
 
 export function spoofEmojis(message: OutgoingMessage): void {
   const escapedIds: string[] = [];
+  const processedIds: string[] = [];
+  const emojiUrls: string[] = [];
 
   for (const match of message.content.matchAll(/\\<(a?):(.*?):(.*?)>/gm)) {
     escapedIds.push(match[3]);
   }
 
-  const hideLinks = config.get("emojiHideLinks", false);
-
   for (const emoji of message.validNonShortcutEmojis) {
     if (escapedIds.includes(emoji.id)) continue;
     if (isEmojiAvailable(emoji)) continue;
+    if (processedIds.includes(emoji.id)) continue;
 
     const prefix = emoji.animated ? "a" : "";
     const name = emoji.originalName || emoji.name;
@@ -41,19 +42,30 @@ export function spoofEmojis(message: OutgoingMessage): void {
     const extension = emoji.animated ? "gif" : "png";
     const url = `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=${size}`;
 
-    // Move emoji to the end and hide it's link
-    if (hideLinks && message.content.length > search.length) {
-      // Remove emoji
-      message.content = message.content.replace(search, "");
+    message.content = message.content.replaceAll(search, "");
 
-      // Add spoilers if needed
-      if (!message.content.includes(HIDE_TEXT_SPOILERS)) message.content += HIDE_TEXT_SPOILERS;
+    processedIds.push(emoji.id);
+    emojiUrls.push(url);
+  }
 
-      // Add emoji
-      message.content += ` ${url} `;
-    } else {
-      // Replace emoji with link
-      message.content = message.content.replace(search, url);
+  message.content = message.content.trim();
+
+  function hideEmojis() {
+    if (message.content.length > 0 && emojiUrls.length > 0) {
+      if (!message.content.includes(HIDE_TEXT_SPOILERS)) {
+        message.content += HIDE_TEXT_SPOILERS;
+      }
     }
+  }
+
+  const hideLinks = config.get("emojiHideLinks", false);
+  if (hideLinks) {
+    // Remove trailing escape symbols
+    message.content = message.content.replace(/\\+$/, "").trim();
+    hideEmojis();
+  }
+
+  for (const url of emojiUrls) {
+    message.content += url;
   }
 }

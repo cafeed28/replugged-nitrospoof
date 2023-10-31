@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type Config = {
+export interface Config {
   emojiSpoof?: boolean;
   emojiSize?: number;
   emojiHideLinks?: boolean;
@@ -10,7 +9,7 @@ export type Config = {
   streamQualityEnable?: boolean;
 
   debugMode?: boolean;
-};
+}
 
 export enum PremiumType {
   NONE = 0,
@@ -66,12 +65,12 @@ export interface OutgoingMessage {
 
 interface AttachmentFile {
   file: File;
-  platform: number; // TODD: Find enum
+  platform: number; // TODO: Find enum
 }
 
 export interface Attachment {
   file: AttachmentFile;
   channelId: string;
   showLargeMessageDialog: boolean;
-  draftType: number; // TODD: Find enum
+  draftType: number; // TODO: Find enum
 }

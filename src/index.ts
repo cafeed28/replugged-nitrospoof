@@ -1,14 +1,11 @@
-import { Injector } from "replugged";
+import { Injector, common } from "replugged";
 
 import { config, logger, userChanged, userInit } from "./misc";
 
 import {
-  addStickerPreview,
   emojiInfo,
-  isSendableSticker,
   messageParser,
   premiumInfo,
-  shouldAttachSticker,
   stickerInfo,
   stickerPreview,
   stickerSendability,
@@ -64,21 +61,22 @@ export function start(): void {
   });
 
   // Stickers
-  injector.instead(stickerInfo, shouldAttachSticker, (args, orig) => {
+  injector.instead(stickerInfo, "shouldAttachSticker", (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
     return true;
   });
 
-  injector.instead(stickerSendability, isSendableSticker, (args, orig) => {
+  injector.instead(stickerSendability, "isSendableSticker", (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
     const sticker = args[0] as Sticker;
 
     if (sticker.type == StickerType.STANDARD) return true;
+    if (sticker.guild_id == common.guilds.getGuildId()) return true;
     if (sticker.format_type == StickerFormat.PNG) return true;
     return false;
   });
 
-  injector.instead(stickerPreview, addStickerPreview, async (args, orig) => {
+  injector.instead(stickerPreview, "addStickerPreview", async (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
 
     const [channelId, sticker, d] = args;

@@ -4,7 +4,6 @@ import { config } from "./misc";
 const { Category, FormItem, Slider, SwitchItem } = components;
 
 export function Settings(): JSX.Element {
-  // TODO: i18n
   return (
     <div>
       <Category title="Emoji" note="Emoji spoofer settings">
