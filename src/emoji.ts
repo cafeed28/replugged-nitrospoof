@@ -50,7 +50,7 @@ export function spoofEmojis(message: OutgoingMessage): void {
 
   message.content = message.content.trim();
 
-  function hideEmojis() {
+  function hideEmojis(): void {
     if (message.content.length > 0 && emojiUrls.length > 0) {
       if (!message.content.includes(HIDE_TEXT_SPOILERS)) {
         message.content += HIDE_TEXT_SPOILERS;
