@@ -38,21 +38,21 @@ export const files = await waitForModule<AttachmentUploader>(
 );
 
 interface StickerInfo {
-  shouldAttachSticker: AnyFunction;
+  Hc: AnyFunction; // shouldAttachSticker
 }
 export const stickerInfo = await waitForModule<StickerInfo>(
   filters.bySource(".ANIMATE_ON_INTERACTION?"),
 );
 
 interface StickerSendability {
-  isSendableSticker: AnyFunction;
+  kl: AnyFunction; // isSendableSticker
 }
 export const stickerSendability = await waitForModule<StickerSendability>(
   filters.bySource(".SENDABLE=0"),
 );
 
 interface StickerPreview {
-  addStickerPreview: AnyFunction;
+  eu: AnyFunction; // addStickerPreview
 }
 export const stickerPreview = await waitForModule<StickerPreview>(
   filters.bySource('"ADD_STICKER_PREVIEW"'),

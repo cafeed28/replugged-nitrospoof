@@ -61,12 +61,12 @@ export function start(): void {
   });
 
   // Stickers
-  injector.instead(stickerInfo, "shouldAttachSticker", (args, orig) => {
+  injector.instead(stickerInfo, "Hc", (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
     return true;
   });
 
-  injector.instead(stickerSendability, "isSendableSticker", (args, orig) => {
+  injector.instead(stickerSendability, "kl", (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
     const sticker = args[0] as Sticker;
 
@@ -76,7 +76,7 @@ export function start(): void {
     return false;
   });
 
-  injector.instead(stickerPreview, "addStickerPreview", async (args, orig) => {
+  injector.instead(stickerPreview, "eu", async (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
 
     const [channelId, sticker, d] = args;
