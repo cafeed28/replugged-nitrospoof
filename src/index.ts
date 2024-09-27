@@ -3,9 +3,12 @@ import { Injector, common } from "replugged";
 import { config, logger, userChanged, userInit } from "./misc";
 
 import {
+  addStickerPreview,
   emojiInfo,
+  isSendableSticker,
   messageParser,
   premiumInfo,
+  shouldAttachSticker,
   stickerInfo,
   stickerPreview,
   stickerSendability,
@@ -23,10 +26,17 @@ export function start(): void {
     logger.log("messageParser:", messageParser);
     logger.log("emojiInfo:", emojiInfo);
     logger.log("stickerInfo:", stickerInfo);
+    logger.log("shouldAttachSticker:", shouldAttachSticker);
     logger.log("stickerSendability:", stickerSendability);
+    logger.log("isSendableSticker:", isSendableSticker);
     logger.log("stickerPreview:", stickerPreview);
+    logger.log("addStickerPreview:", addStickerPreview);
     logger.log("premiumInfo:", premiumInfo);
     logger.log("users:", users);
+  }
+
+  if (!shouldAttachSticker || !isSendableSticker || !addStickerPreview) {
+    throw new Error("Failed to find function keys");
   }
 
   userInit();
@@ -61,12 +71,12 @@ export function start(): void {
   });
 
   // Stickers
-  injector.instead(stickerInfo, "Hc", (args, orig) => {
+  injector.instead(stickerInfo, shouldAttachSticker, (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
     return true;
   });
 
-  injector.instead(stickerSendability, "kl", (args, orig) => {
+  injector.instead(stickerSendability, isSendableSticker, (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
     const sticker = args[0] as Sticker;
 
@@ -76,7 +86,7 @@ export function start(): void {
     return false;
   });
 
-  injector.instead(stickerPreview, "eu", async (args, orig) => {
+  injector.instead(stickerPreview, addStickerPreview, async (args, orig) => {
     if (!config.get("stickerSpoof")) return orig(...args);
 
     const [channelId, sticker, d] = args;

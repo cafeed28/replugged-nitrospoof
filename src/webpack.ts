@@ -1,5 +1,5 @@
 import { webpack } from "replugged";
-const { filters, waitForModule, waitForProps } = webpack;
+const { filters, getFunctionKeyBySource, waitForModule, waitForProps } = webpack;
 
 import type { AnyFunction } from "replugged/dist/types";
 import type { Attachment, OutgoingMessage } from "./types";
@@ -37,23 +37,17 @@ export const files = await waitForModule<AttachmentUploader>(
   filters.bySource('"UPLOAD_ATTACHMENT_ADD_FILES"'),
 );
 
-interface StickerInfo {
-  Hc: AnyFunction; // shouldAttachSticker
-}
-export const stickerInfo = await waitForModule<StickerInfo>(
+type AnyModule = Record<string, AnyFunction>;
+
+export const stickerInfo = await waitForModule<AnyModule>(
   filters.bySource(".ANIMATE_ON_INTERACTION?"),
 );
+export const shouldAttachSticker = getFunctionKeyBySource(stickerInfo, ".getStickerPreview(");
 
-interface StickerSendability {
-  kl: AnyFunction; // isSendableSticker
-}
-export const stickerSendability = await waitForModule<StickerSendability>(
-  filters.bySource(".SENDABLE=0"),
-);
+export const stickerSendability = await waitForModule<AnyModule>(filters.bySource(".SENDABLE=0"));
+export const isSendableSticker = getFunctionKeyBySource(stickerSendability, "0===");
 
-interface StickerPreview {
-  eu: AnyFunction; // addStickerPreview
-}
-export const stickerPreview = await waitForModule<StickerPreview>(
+export const stickerPreview = await waitForModule<AnyModule>(
   filters.bySource('"ADD_STICKER_PREVIEW"'),
 );
+export const addStickerPreview = getFunctionKeyBySource(stickerPreview, '"ADD_STICKER_PREVIEW"');
