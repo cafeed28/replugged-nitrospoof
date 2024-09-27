@@ -16,6 +16,7 @@
   "type": "replugged-plugin",
   "renderer": "src/index.ts",
   "plaintextPatches": "src/plaintextPatches.ts",
+  "reloadRequired": true,
   "source": "https://github.com/cafeed28/replugged-nitrospoof",
-  "image": "https://cdn.discordapp.com/attachments/1026314163007529020/1156935460602527744/ezgif.com-video-to-gif.gif"
+  "image": "https://raw.githubusercontent.com/cafeed28/replugged-nitrospoof/e5db4f57d13e8ef0c6975014872a0acc94ebead1/.github/assets/store-image.gif"
 }
